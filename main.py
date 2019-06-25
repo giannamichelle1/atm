@@ -1,7 +1,6 @@
 from atm import Atm
 
 def main():
-        print("hello this is main!")
         atm = Atm()
         atm.run()
 
