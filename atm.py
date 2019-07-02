@@ -4,12 +4,10 @@ from database import Database
 
 class Atm(object):
     def run(self):
-        print("runningAtm")
         self.__database.open()
         name = self.__interface.promptUser("what is your name? ")
-        print(name)
+        name = name.lower()
         pin = self.__interface.promptUser("what is your pin? ")
-        print (pin)
         user = User(name, pin)
         userIndex = self.__database.authenticate(user)
         if userIndex == -1:
@@ -26,30 +24,37 @@ class Atm(object):
                     self._withdrawal(user)
 
                 elif Input == "deposit":
-                     self._deposit()
+                     self._deposit(user)
 
                 elif Input == "balance":
-                    self._balance()
+                    self._balance(user)
 
                 elif Input != "exit":
                     print("Invalid command!")
         self.__database.close()
         self._exit()
+        		
     def _withdrawal(self, user):
-        m = self.__interface.promptUser("How much would you like to withdrawal?")
+        m = self.__interface.promptUser("How much would you like to withdrawal? ")
         m = int(m)
         user.money = user.money - m
+        self.__database.save(user)
+        self._balance(user)
+        
     def __init__(self):
         super().__init__()
         self.__interface = Cli()
-        print("constructing")
         self.__database = Database("database.txt")
 
-    def _deposit(self):
-        pass
+    def _deposit(self, user):
+        m = self.__interface.promptUser("How much would you like to deposit? ")
+        m = int(m)
+        user.money = user.money + m
+        self.__database.save(user)
+        self._balance(user)
 
-    def _balance(self):
-        pass
+    def _balance(self, user):
+        print("Your balance is " + str(user.money) + "!")
 
     def _exit(self):
-        print("goodbye!")
+        print("Goodbye!")

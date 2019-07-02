@@ -38,5 +38,12 @@ class Database(object):
         return self.__users[userIndex]
 
     def save(self, user):
-        
-        
+        found = False
+        i = 0
+        while not found and i < len(self.__users):
+            tempUser = self.__users[i]
+            if tempUser.name == user.name and tempUser.pin == user.pin:
+                found = True
+            else:
+                i = i + 1
+        self.__users[i] = user
